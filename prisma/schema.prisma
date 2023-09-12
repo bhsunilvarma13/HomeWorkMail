@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum plan {
+  FREE
+  PRO
+}
+
+enum role {
+  USER
+  ADMIN
+  OWNER
+  TEACHER
+  STUDENT
+}
+
+model Tenant {
+  id                  String               @id @default(dbgenerated("concat('tnt_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
+  name                String?              @unique
+  plan                plan                 @default(FREE)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  classes             Class[]
+  tenantUserRelations TenantUserRelation[]
+}
+
+model TenantUserRelation {
+  id        String   @id @default(dbgenerated("concat('tus_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
+  role      role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id                  String               @id @default(dbgenerated("concat('usr_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
+  email               String               @unique
+  name                String?
+  avatar              String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  tenantUserRelations TenantUserRelation[]
+  classes             Class[]
+}
+
+model Class {
+  id        String   @id @default(dbgenerated("concat('cls_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenantId  String
+  Tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  Users     User[]
+}
