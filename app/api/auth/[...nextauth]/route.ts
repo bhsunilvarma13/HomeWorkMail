@@ -33,6 +33,7 @@ const handler = NextAuth({
               tenant: {
                 create: {},
               },
+              role: "OWNER",
             },
           },
         },
