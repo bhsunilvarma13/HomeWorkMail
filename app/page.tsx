@@ -6,8 +6,17 @@ export default async function Home() {
   return (
     <main className="w-screen min-h-screen">
       <div className="max-w-5xl mx-auto h-[10vh] flex items-center justify-between px-4">
-        <span className="text-2xl font-black">HWM</span>
-        <ModeToggle />
+        <Link href="/">
+          <span className="text-2xl font-black">HWM</span>
+        </Link>
+        <div className="flex items-center">
+          <Link href="/app">
+            <Button variant="link" className="mr-4">
+              Sign In
+            </Button>
+          </Link>
+          <ModeToggle />
+        </div>
       </div>
       <div className="max-w-5xl mx-auto h-[80vh] grid place-items-center px-4">
         <div className="flex flex-col items-center gap-8">
@@ -34,7 +43,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className="h-[10vh] text-center text-xs font-extralight flex items-center justify-center text-gray-500">
+      <div className="h-[10vh] border-t text-center text-xs font-extralight flex items-center justify-center text-gray-500">
         @2023 HomeWorkMail. All rights reserved.
       </div>
     </main>

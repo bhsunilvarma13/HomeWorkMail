@@ -1,3 +1,3 @@
 export default async function App() {
-  return <main>App</main>;
+  return <div className="max-w-7xl mx-auto"></div>;
 }
