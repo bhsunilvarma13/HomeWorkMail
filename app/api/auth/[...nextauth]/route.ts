@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { session } from "@/lib/auth";
 
 const handler = NextAuth({
   session: {
@@ -43,6 +44,22 @@ const handler = NextAuth({
       });
 
       return true;
+    },
+
+    session,
+
+    async jwt({ token, session }) {
+      if (token.email) {
+        const user = await prisma.user.findUnique({
+          where: { email: token.email },
+        });
+
+        if (!user) throw new Error("User not found");
+
+        token.id = user.id;
+      }
+
+      return token;
     },
   },
 });

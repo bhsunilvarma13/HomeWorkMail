@@ -1,3 +1,3 @@
-export default function Home() {
-  return <main className="">HomeWorkMail</main>;
+export default async function Home() {
+  return <main>HomeWorkMail</main>;
 }
