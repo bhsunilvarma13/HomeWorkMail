@@ -6,7 +6,11 @@ export default async function AvatarComp() {
 
   return (
     <Avatar>
-      <AvatarImage src={user.image || ""} alt="Profile Picture" />
+      <AvatarImage
+        src={user.image || ""}
+        alt="Profile Picture"
+        referrerPolicy="no-referrer"
+      />
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>
   );
