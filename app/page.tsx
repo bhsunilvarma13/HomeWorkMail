@@ -14,7 +14,7 @@ export default async function Home() {
           <h1 className="text-3xl font-black text-center sm:text-7xl">
             Revamp your homework experience
           </h1>
-          <p className="sm:text-base text-sm sm:w-3/4 w-full text-center font-light leading-relaxed">
+          <p className="sm:text-base text-xs sm:w-3/4 w-full text-center font-light leading-relaxed">
             Elevate the way you create and distribute homework tasks with
             HomeWorkMail. Our cutting-edge SaaS platform streamlines the entire
             process, making it seamless for educators to craft, allocate, and
