@@ -21,7 +21,7 @@ enum role {
 }
 
 model Tenant {
-  id                  String               @id @default(dbgenerated("concat('tnt_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
+  id                  String               @id @default(dbgenerated("concat('tnt_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
   name                String?              @unique
   plan                plan                 @default(FREE)
   createdAt           DateTime             @default(now())
@@ -31,8 +31,8 @@ model Tenant {
 }
 
 model TenantUserRelation {
-  id        String   @id @default(dbgenerated("concat('tus_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
-  role      role     @default(USER)
+  id        String   @id @default(dbgenerated("concat('tus_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
+  role      role     @default(OWNER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
@@ -42,7 +42,7 @@ model TenantUserRelation {
 }
 
 model User {
-  id                  String               @id @default(dbgenerated("concat('usr_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
+  id                  String               @id @default(dbgenerated("concat('usr_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
   email               String               @unique
   name                String?
   avatar              String?
@@ -53,8 +53,9 @@ model User {
 }
 
 model Class {
-  id        String   @id @default(dbgenerated("concat('cls_', replace((gen_random_uuid())::text, '-'::text, ''::text))"))
+  id        String   @id @default(dbgenerated("concat('cls_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
   name      String
+  inviteKey String   @unique @default(dbgenerated("replace((gen_random_uuid())::text, '-'::text, ''::text)")) @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tenantId  String
