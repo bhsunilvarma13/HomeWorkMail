@@ -32,7 +32,9 @@ const handler = NextAuth({
           tenantUserRelations: {
             create: {
               tenant: {
-                create: {},
+                create: {
+                  name: `${user.name}'s Organization`,
+                },
               },
               role: "OWNER",
             },

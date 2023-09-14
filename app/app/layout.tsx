@@ -1,6 +1,6 @@
 import { ModeToggle } from "@/components/darkModebutton";
-import DropDown from "@/components/dropdown";
-import Nav from "@/components/nav";
+import DropDown from "@/components/AccountDropdown";
+import Nav from "@/components/NavigationMenu";
 import Link from "next/link";
 import { ReactNode } from "react";
 

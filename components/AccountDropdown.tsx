@@ -6,10 +6,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import AvatarComp from "@/components/avatar";
-import { Button } from "@/components/ui/button";
 import { LogOut, User2, Users2, Wallet } from "lucide-react";
 import Link from "next/link";
+import AvatarComp from "./Avatar";
 
 export default async function DropDown() {
   return (

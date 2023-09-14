@@ -49,16 +49,27 @@ model User {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   tenantUserRelations TenantUserRelation[]
-  classes             Class[]
+  classUserRelations  ClassUserRelation[]
 }
 
 model Class {
-  id        String   @id @default(dbgenerated("concat('cls_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
-  name      String
-  inviteKey String   @unique @default(dbgenerated("replace((gen_random_uuid())::text, '-'::text, ''::text)")) @db.Text
+  id                 String              @id @default(dbgenerated("concat('cls_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
+  name               String
+  inviteKey          String              @unique @default(dbgenerated("replace((gen_random_uuid())::text, '-'::text, ''::text)")) @db.Text
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  tenantId           String
+  tenant             Tenant              @relation(fields: [tenantId], references: [id])
+  classUserRelations ClassUserRelation[]
+}
+
+model ClassUserRelation {
+  id        String   @id @default(dbgenerated("concat('cur_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
+  role      role     @default(STUDENT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  tenantId  String
-  Tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  Users     User[]
+  userId    String
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
