@@ -199,10 +199,10 @@ export default async function SettingsPage({
             </div>
           </form>
         </div>
-        <Card className="my-8 bg-red-200">
+        <Card className="my-8 bg-red-500 text-white">
           <CardHeader>
             <CardTitle>Delete Class</CardTitle>
-            <CardDescription className="flex items-center gap-1">
+            <CardDescription className="flex items-center gap-1 text-white">
               <Ban size={16} />
               Caution - This action irreversibly deletes this class.
             </CardDescription>
@@ -215,7 +215,7 @@ export default async function SettingsPage({
                 value={classUserRelationshipData.classId}
                 autoComplete="off"
               />
-              <Button className="flex gap-2" variant="destructive">
+              <Button className="flex gap-2">
                 <Trash size={16} /> Delete
               </Button>
             </form>

@@ -1,4 +1,11 @@
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getUserSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { ArrowLeftIcon, SettingsIcon } from "lucide-react";

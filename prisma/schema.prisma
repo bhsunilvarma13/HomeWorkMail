@@ -20,6 +20,17 @@ enum role {
   STUDENT
 }
 
+enum questionType {
+  MULTIPLE_CHOICE
+  SHORT_ANSWER
+  LONG_ANSWER
+  FILE_UPLOAD
+  TRUE_FALSE
+  ESSAY
+  FILL_IN_THE_BLANK
+  MULTIPLE_RESPONSE
+}
+
 model Tenant {
   id                  String               @id @default(dbgenerated("concat('tnt_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
   name                String?              @unique
@@ -61,6 +72,7 @@ model Class {
   tenantId           String
   tenant             Tenant              @relation(fields: [tenantId], references: [id])
   classUserRelations ClassUserRelation[]
+  homeworks          Homework[]
 }
 
 model ClassUserRelation {
@@ -72,4 +84,30 @@ model ClassUserRelation {
   classId   String
   class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id])
+}
+
+model Homework {
+  id          String     @id @default(dbgenerated("concat('hwm_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
+  heading     String
+  description String
+  deadline    DateTime
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  classId     String
+  class       Class      @relation(fields: [classId], references: [id], onDelete: Cascade)
+  questions   Question[]
+}
+
+model Question {
+  id           String   @id @default(dbgenerated("concat('qst_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
+  question     String
+  description  String
+  questionType String
+  options      String[]
+  answer       String?
+  fileID       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  homeworkId   String
+  homework     Homework @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
 }
