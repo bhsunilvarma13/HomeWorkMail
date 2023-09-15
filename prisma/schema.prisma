@@ -70,6 +70,6 @@ model ClassUserRelation {
   updatedAt DateTime @updatedAt
   userId    String
   classId   String
-  class     Class    @relation(fields: [classId], references: [id])
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id])
 }

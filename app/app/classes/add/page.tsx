@@ -89,7 +89,7 @@ export default async function AddClass() {
     redirect(`/app/classes/${createdClassRelationship.id}`);
   }
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 flex gap-4">
+    <div className="max-w-7xl mx-auto px-4 xl:px-0 py-8 flex gap-4">
       <div className="my-2 hidden sm:block">
         <Link href="/app/classes">
           <Button variant="outline" className="rounded-full p-3">

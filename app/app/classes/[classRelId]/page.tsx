@@ -1,23 +1,7 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { getUserSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { ArrowLeftIcon, Edit, MoreVertical } from "lucide-react";
+import { ArrowLeftIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
 
 type ClassPageParams = {
@@ -62,15 +46,15 @@ export default async function ClassesPage({
 
   if (!tenantUserRelationshipData) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 text-3xl font-semibold">
         You do not have access to this class
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-4">
+    <div className="max-w-7xl mx-auto px-4 xl:px-0">
+      <div className="sticky bg-background py-8 top-0 flex items-center gap-4">
         <div>
           <Link href="/app/classes">
             <Button variant="outline" className="rounded-full p-3">
@@ -86,7 +70,20 @@ export default async function ClassesPage({
             {classUserRelationshipData.class.tenant.name}
           </p>
         </div>
+        {(tenantUserRelationshipData.role === "TEACHER" ||
+          tenantUserRelationshipData.role === "OWNER" ||
+          tenantUserRelationshipData.role === "ADMIN") &&
+          classUserRelationshipData.role === "TEACHER" && (
+            <div>
+              <Link href={`/app/classes/${classRelId}/settings`}>
+                <Button variant="outline" className="p-3 rounded-full">
+                  <SettingsIcon size={16} />
+                </Button>
+              </Link>
+            </div>
+          )}
       </div>
+      <div></div>
     </div>
   );
 }

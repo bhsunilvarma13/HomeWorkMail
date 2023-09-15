@@ -70,7 +70,7 @@ async function Content() {
 
 export default async function ClassesPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 xl:px-0 py-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-semibold">Classes</h1>
         <Link href="/app/classes/add">
