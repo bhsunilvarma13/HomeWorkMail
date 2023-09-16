@@ -234,13 +234,41 @@ export default async function SettingsPage({
                           onValueChange={async () => {
                             "use server";
 
-                            await prisma.classUserRelation.update({
+                            const classUserRelation =
+                              await prisma.classUserRelation.update({
+                                where: {
+                                  id: cur.id,
+                                },
+                                data: {
+                                  role:
+                                    cur.role === "TEACHER"
+                                      ? "STUDENT"
+                                      : "TEACHER",
+                                },
+                                include: {
+                                  class: true,
+                                },
+                              });
+
+                            const tenantUserRelationshipData =
+                              await prisma.tenantUserRelation.findFirst({
+                                where: {
+                                  userId: cur.user.id,
+                                  tenantId: classUserRelation.class.tenantId,
+                                },
+                              });
+
+                            if (!tenantUserRelationshipData) {
+                              return;
+                            }
+
+                            await prisma.tenantUserRelation.update({
                               where: {
-                                id: cur.id,
+                                id: tenantUserRelationshipData.id,
                               },
                               data: {
                                 role:
-                                  cur.role === "TEACHER"
+                                  tenantUserRelationshipData.role === "TEACHER"
                                     ? "STUDENT"
                                     : "TEACHER",
                               },
@@ -306,13 +334,41 @@ export default async function SettingsPage({
                           onValueChange={async () => {
                             "use server";
 
-                            await prisma.classUserRelation.update({
+                            const classUserRelation =
+                              await prisma.classUserRelation.update({
+                                where: {
+                                  id: cur.id,
+                                },
+                                data: {
+                                  role:
+                                    cur.role === "TEACHER"
+                                      ? "STUDENT"
+                                      : "TEACHER",
+                                },
+                                include: {
+                                  class: true,
+                                },
+                              });
+
+                            const tenantUserRelationshipData =
+                              await prisma.tenantUserRelation.findFirst({
+                                where: {
+                                  userId: cur.user.id,
+                                  tenantId: classUserRelation.class.tenantId,
+                                },
+                              });
+
+                            if (!tenantUserRelationshipData) {
+                              return;
+                            }
+
+                            await prisma.tenantUserRelation.update({
                               where: {
-                                id: cur.id,
+                                id: tenantUserRelationshipData.id,
                               },
                               data: {
                                 role:
-                                  cur.role === "TEACHER"
+                                  tenantUserRelationshipData.role === "TEACHER"
                                     ? "STUDENT"
                                     : "TEACHER",
                               },
