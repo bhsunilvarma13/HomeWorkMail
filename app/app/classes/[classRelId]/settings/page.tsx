@@ -18,7 +18,14 @@ import {
 } from "@/components/ui/select";
 import { getUserSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { ArrowLeftIcon, Ban, Delete, DeleteIcon, Trash } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  Ban,
+  Delete,
+  DeleteIcon,
+  Trash,
+  Trash2,
+} from "lucide-react";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -39,6 +46,11 @@ export default async function SettingsPage({
       class: {
         include: {
           tenant: true,
+          classUserRelations: {
+            include: {
+              user: true,
+            },
+          },
         },
       },
     },
@@ -198,6 +210,150 @@ export default async function SettingsPage({
               </div>
             </div>
           </form>
+        </div>
+        <div className="my-8">
+          <h2 className="text-2xl my-4 font-semibold">Teachers</h2>
+          <ul>
+            {classUserRelationshipData.class.classUserRelations.find(
+              (cur) => cur.role === "TEACHER"
+            ) ? (
+              classUserRelationshipData.class.classUserRelations
+                .filter((cur) => cur.role === "TEACHER")
+                .map((cur) => (
+                  <li key={cur.id} className="my-2 flex">
+                    <div className="flex-grow">
+                      <p className="text-sm font-semibold">{cur.user.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {cur.user.email}
+                      </p>
+                    </div>
+                    {cur.id !== classRelId && (
+                      <div className="flex gap-4">
+                        <Select
+                          value={cur.role}
+                          onValueChange={async () => {
+                            "use server";
+
+                            await prisma.classUserRelation.update({
+                              where: {
+                                id: cur.id,
+                              },
+                              data: {
+                                role:
+                                  cur.role === "TEACHER"
+                                    ? "STUDENT"
+                                    : "TEACHER",
+                              },
+                            });
+
+                            revalidatePath(
+                              `/app/classes/${classRelId}/settings`
+                            );
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="TEACHER">Teacher</SelectItem>
+                            <SelectItem value="STUDENT">Student</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="destructive"
+                          className="rounded-full p-3"
+                          onClick={async () => {
+                            "use server";
+
+                            await prisma.classUserRelation.delete({
+                              where: {
+                                id: cur.id,
+                              },
+                            });
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    )}
+                  </li>
+                ))
+            ) : (
+              <p className="text-sm text-muted-foreground">No teachers yet</p>
+            )}
+          </ul>
+        </div>
+        <div className="my-8">
+          <h2 className="text-xl font-semibold">Students</h2>
+          <ul>
+            {classUserRelationshipData.class.classUserRelations.find(
+              (cur) => cur.role === "STUDENT"
+            ) ? (
+              classUserRelationshipData.class.classUserRelations
+                .filter((cur) => cur.role === "STUDENT")
+                .map((cur) => (
+                  <li key={cur.id} className="my-2 flex">
+                    <div className="flex-grow">
+                      <p className="text-sm font-semibold">{cur.user.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {cur.user.email}
+                      </p>
+                    </div>
+                    {cur.id !== classRelId && (
+                      <div className="flex gap-4">
+                        <Select
+                          value={cur.role}
+                          onValueChange={async () => {
+                            "use server";
+
+                            await prisma.classUserRelation.update({
+                              where: {
+                                id: cur.id,
+                              },
+                              data: {
+                                role:
+                                  cur.role === "TEACHER"
+                                    ? "STUDENT"
+                                    : "TEACHER",
+                              },
+                            });
+
+                            revalidatePath(
+                              `/app/classes/${classRelId}/settings`
+                            );
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="TEACHER">Teacher</SelectItem>
+                            <SelectItem value="STUDENT">Student</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          variant="destructive"
+                          className="rounded-full p-3"
+                          onClick={async () => {
+                            "use server";
+
+                            await prisma.classUserRelation.delete({
+                              where: {
+                                id: cur.id,
+                              },
+                            });
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    )}
+                  </li>
+                ))
+            ) : (
+              <p className="text-sm text-muted-foreground">No teachers yet</p>
+            )}
+          </ul>
         </div>
         <Card className="my-8 bg-red-500 text-white">
           <CardHeader>

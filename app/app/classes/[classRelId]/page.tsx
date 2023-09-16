@@ -1,11 +1,5 @@
+import CopyInviteKey from "@/components/copyInviteKey";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { getUserSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { ArrowLeftIcon, SettingsIcon } from "lucide-react";
@@ -70,9 +64,19 @@ export default async function ClassesPage({
           </Link>
         </div>
         <div className="flex-grow space-y-1.5">
-          <h1 className="text-3xl font-semibold">
-            {classUserRelationshipData.class.name}
-          </h1>
+          <div className="flex gap-4 items-center">
+            <h1 className="text-3xl font-semibold">
+              {classUserRelationshipData.class.name}
+            </h1>
+            {(tenantUserRelationshipData.role === "TEACHER" ||
+              tenantUserRelationshipData.role === "OWNER" ||
+              tenantUserRelationshipData.role === "ADMIN") &&
+              classUserRelationshipData.role === "TEACHER" && (
+                <CopyInviteKey
+                  inviteKey={classUserRelationshipData.class.inviteKey}
+                />
+              )}
+          </div>
           <p className="text-sm text-muted-foreground">
             {classUserRelationshipData.class.tenant.name}
           </p>

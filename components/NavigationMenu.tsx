@@ -12,8 +12,8 @@ const links = [
     label: "Classes",
   },
   {
-    href: "/app/analytics",
-    label: "Analytics",
+    href: "/app/overview",
+    label: "Overview",
   },
 ];
 
