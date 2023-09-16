@@ -268,7 +268,9 @@ export default async function SettingsPage({
                               },
                               data: {
                                 role:
-                                  tenantUserRelationshipData.role === "TEACHER"
+                                  tenantUserRelationshipData.role === "OWNER"
+                                    ? "OWNER"
+                                    : "TEACHER"
                                     ? "STUDENT"
                                     : "TEACHER",
                               },
