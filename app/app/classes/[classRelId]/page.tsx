@@ -70,12 +70,11 @@ export default async function ClassesPage({
             </h1>
             {(tenantUserRelationshipData.role === "TEACHER" ||
               tenantUserRelationshipData.role === "OWNER" ||
-              tenantUserRelationshipData.role === "ADMIN") &&
-              classUserRelationshipData.role === "TEACHER" && (
-                <CopyInviteKey
-                  inviteKey={classUserRelationshipData.class.inviteKey}
-                />
-              )}
+              tenantUserRelationshipData.role === "ADMIN") && (
+              <CopyInviteKey
+                inviteKey={classUserRelationshipData.class.inviteKey}
+              />
+            )}
           </div>
           <p className="text-sm text-muted-foreground">
             {classUserRelationshipData.class.tenant.name}
@@ -83,8 +82,7 @@ export default async function ClassesPage({
         </div>
         {(tenantUserRelationshipData.role === "TEACHER" ||
           tenantUserRelationshipData.role === "OWNER" ||
-          tenantUserRelationshipData.role === "ADMIN") &&
-          classUserRelationshipData.role === "TEACHER" && (
+          tenantUserRelationshipData.role === "ADMIN") && (
             <div>
               <Link href={`/app/classes/${classRelId}/settings`}>
                 <Button variant="outline" className="p-3 rounded-full">

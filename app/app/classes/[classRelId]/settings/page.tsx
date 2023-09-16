@@ -80,8 +80,8 @@ export default async function SettingsPage({
   }
 
   if (
-    tenantUserRelationshipData.role === "STUDENT" ||
-    tenantUserRelationshipData.role === "USER" ||
+    (tenantUserRelationshipData.role === "STUDENT" ||
+      tenantUserRelationshipData.role === "USER") &&
     classUserRelationshipData.role === "STUDENT"
   ) {
     return (
