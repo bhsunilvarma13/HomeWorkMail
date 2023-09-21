@@ -73,6 +73,7 @@ model Class {
   tenant             Tenant              @relation(fields: [tenantId], references: [id])
   classUserRelations ClassUserRelation[]
   homeworks          Homework[]
+  Section            Section[]
 }
 
 model ClassUserRelation {
@@ -87,27 +88,40 @@ model ClassUserRelation {
 }
 
 model Homework {
-  id          String     @id @default(dbgenerated("concat('hwm_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
+  id          String    @id @default(dbgenerated("concat('hwm_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
   heading     String
   description String
   deadline    DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  classId     String
+  class       Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  sections    Section[]
+}
+
+model Section {
+  id          String     @id @default(dbgenerated("concat('sec_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
+  heading     String
+  description String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  classId     String
-  class       Class      @relation(fields: [classId], references: [id], onDelete: Cascade)
+  homeworkId  String
+  homework    Homework   @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  class       Class      @relation(fields: [classId], references: [id])
+  classId     String     @db.Text
   questions   Question[]
 }
 
 model Question {
-  id           String   @id @default(dbgenerated("concat('qst_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
+  id           String       @id @default(dbgenerated("concat('qst_', replace((gen_random_uuid())::text, '-'::text, ''::text))")) @db.Text
   question     String
   description  String
-  questionType String
+  questionType questionType
   options      String[]
   answer       String?
   fileID       String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  homeworkId   String
-  homework     Homework @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  sectionId    String
+  section      Section      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 }
