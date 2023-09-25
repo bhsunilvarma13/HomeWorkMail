@@ -6,14 +6,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { getUserSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { ArrowLeft, Plus, Save, Trash } from "lucide-react";
+import { ArrowLeft, CheckCircle, Plus, Save, Trash } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 
@@ -155,12 +157,76 @@ export default async function CreateHomeworkPage({
     },
 
     include: {
-      class: true,
+      class: {
+        include: {
+          classUserRelations: true,
+        },
+      },
     },
   });
 
+  const user = await getUserSession();
+
   if (!homework || !homework.class) {
     return <div>Homework not found</div>;
+  }
+
+  if (
+    !homework.class.classUserRelations.find(
+      (relation) => relation.userId === user.id && relation.role === "TEACHER"
+    )
+  ) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <h1 className="text-xl font-semibold">
+          You do not have access to this page
+        </h1>
+      </div>
+    );
+  }
+
+  async function SendHomeworks() {
+    "use server";
+
+    const homework = await prisma.homework.findUnique({
+      where: {
+        id: homeworkId,
+      },
+
+      include: {
+        class: {
+          include: {
+            classUserRelations: {
+              where: {
+                role: "STUDENT",
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!homework || !homework.class) {
+      return;
+    }
+
+    await prisma.homeworkStudentRelation.createMany({
+      data: homework.class.classUserRelations.map((relation) => ({
+        homeworkId: homeworkId,
+        userId: relation.userId,
+      })),
+    });
+
+    await prisma.homework.update({
+      where: {
+        id: homeworkId,
+      },
+      data: {
+        shown: true,
+      },
+    });
+
+    revalidatePath(`/app/homeworks/add/${homeworkId}`);
   }
 
   return (
@@ -175,12 +241,51 @@ export default async function CreateHomeworkPage({
       <div className="flex-grow">
         <div className="flex">
           <div className="space-y-1.5">
-            <h1 className="text-3xl font-semibold">{homework.heading}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-3xl font-semibold">{homework.heading}</h1>
+              <Switch
+                defaultChecked={homework.shown}
+                onCheckedChange={async () => {
+                  "use server";
+
+                  await prisma.homework.update({
+                    where: {
+                      id: homeworkId,
+                    },
+                    data: {
+                      shown: !homework.shown,
+                    },
+                  });
+
+                  revalidatePath(`/app/homeworks/add/${homeworkId}`);
+                }}
+              />
+              <p className="text-xs text-muted-foreground">
+                {homework.shown ? "Active" : "Inactive"}
+              </p>
+            </div>
             <p className=" text-muted-foreground text-sm">
-              {homework.class.name}
+              {homework.class.name} • Deadline:{" "}
+              {homework.deadline ? String(homework.deadline) : "None"}
             </p>
           </div>
-          <Button className="ml-auto">Send Homework</Button>
+
+          {(await prisma.homeworkStudentRelation.count({
+            where: {
+              homeworkId: homeworkId,
+            },
+          })) === 0 ? (
+            <form className="ml-auto" action={SendHomeworks}>
+              <Button variant="outline" type="submit">
+                Send Homeworks
+              </Button>
+            </form>
+          ) : (
+            <Button variant="ghost" disabled className="ml-auto">
+              <CheckCircle size={16} className="mr-2" />
+              Homeworks Sent
+            </Button>
+          )}
         </div>
 
         <Sections homeworkId={homeworkId} />

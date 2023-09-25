@@ -215,6 +215,14 @@ async function Homeworks() {
                       ? String(homework.deadline)
                       : "No Deadline"}
                   </TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/app/homeworks/add/${homework.id}`}
+                      className="underline"
+                    >
+                      Edit
+                    </Link>
+                  </TableCell>
                 </TableRow>
               ) : (
                 <>
