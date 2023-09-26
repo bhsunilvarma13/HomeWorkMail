@@ -1,5 +1,8 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
+import { ArrowBigLeft, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default async function HomeworkPage({
   params: { homeworkId },
@@ -40,19 +43,25 @@ export default async function HomeworkPage({
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="space-y-1.5">
-        <div className="flex items-center gap-2">
-          <h1 className="text-3xl font-semibold">{homework.heading}</h1>
-          <Badge className="mt-1">{homework.class.name}</Badge>
-        </div>
+      <div className="flex items-center gap-4">
+        <Link href={`/app/homeworks`}>
+          <Button className="rounded-full p-3" variant="outline">
+            <ArrowLeft size={16} />
+          </Button>
+        </Link>
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl font-semibold">{homework.heading}</h1>
+            <Badge className="mt-1">{homework.class.name}</Badge>
+          </div>
 
-        <p className="text-sm text-muted-foreground">
-          {homework.deadline
-            ? `Deadline: ${String(homework.deadline)}`
-            : "No Deadline"}
-        </p>
+          <p className="text-sm text-muted-foreground">
+            {homework.deadline
+              ? `Deadline: ${String(homework.deadline)}`
+              : "No Deadline"}
+          </p>
+        </div>
       </div>
-      <div></div>
     </div>
   );
 }

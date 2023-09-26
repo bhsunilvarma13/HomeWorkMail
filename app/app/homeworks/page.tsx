@@ -165,7 +165,7 @@ async function Homeworks() {
           {classUserRelation.map((relation) =>
             relation.class.homeworks.map((homework) =>
               relation.role === "TEACHER" ? (
-                <TableRow>
+                <TableRow key={homework.id}>
                   <TableCell className="w-[180px]">
                     <Select
                       value={homework.shown ? "TRUE" : "FALSE"}

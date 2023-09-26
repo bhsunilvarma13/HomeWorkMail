@@ -1,7 +1,26 @@
 import CopyInviteKey from "@/components/copyInviteKey";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getUserSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { Class } from "@prisma/client";
 import { ArrowLeftIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -10,6 +29,39 @@ type ClassPageParams = {
     classRelId: string;
   };
 };
+
+async function Homeworks({ classId }: { classId: string }) {
+  const homeworks = await prisma.homework.findMany({
+    where: {
+      classId: classId,
+    },
+    orderBy: {
+      deadline: "asc",
+    },
+  });
+
+  return (
+    <div>
+      {homeworks.map((homework) => (
+        <Card key={homework.id}>
+          <CardHeader>
+            <CardTitle>
+              <Link
+                href={`/app/homeworks/${homework.id}`}
+                className="underline"
+              >
+                {homework.heading}
+              </Link>
+            </CardTitle>
+            <CardDescription>
+              Deadline: {homework.deadline ? String(homework.deadline) : "None"}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      ))}
+    </div>
+  );
+}
 
 export default async function ClassesPage({
   params: { classRelId },
@@ -83,16 +135,17 @@ export default async function ClassesPage({
         {(tenantUserRelationshipData.role === "TEACHER" ||
           tenantUserRelationshipData.role === "OWNER" ||
           tenantUserRelationshipData.role === "ADMIN") && (
-            <div>
-              <Link href={`/app/classes/${classRelId}/settings`}>
-                <Button variant="outline" className="p-3 rounded-full">
-                  <SettingsIcon size={16} />
-                </Button>
-              </Link>
-            </div>
-          )}
+          <div>
+            <Link href={`/app/classes/${classRelId}/settings`}>
+              <Button variant="outline" className="p-3 rounded-full">
+                <SettingsIcon size={16} />
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
-      <div></div>
+
+      <Homeworks classId={classUserRelationshipData.classId} />
     </div>
   );
 }

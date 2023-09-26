@@ -69,7 +69,7 @@ async function Sections({ homeworkId }: { homeworkId: string }) {
   return (
     <>
       {sections.map((section) => (
-        <section className="my-8">
+        <section className="my-8" key={section.id}>
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-4">
